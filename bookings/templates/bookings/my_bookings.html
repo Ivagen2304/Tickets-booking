@@ -1,0 +1,20 @@
+{% extends "bookings/base.html" %}
+{% block title %}Мої бронювання{% endblock %}
+{% block content %}
+<h2>Мої бронювання</h2>
+{% if bookings %}
+  <ul>
+  {% for b in bookings %}
+    <li>
+      №{{ b.id }} — {{ b.trip.train }}: {{ b.trip.origin }}→{{ b.trip.destination }} — {{ b.trip.departure|date:"Y-m-d H:i" }}
+      {% for t in b.tickets.all %}
+        <div>Пасажир: {{ t.passenger_name }}, вагон {{ t.carriage_index }}, місце {{ t.seat_number }}</div>
+      {% endfor %}
+      — Статус оплати: {% if b.paid %}сплачено{% else %}очікує{% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>Поки що немає бронювань.</p>
+{% endif %}
+{% endblock %}

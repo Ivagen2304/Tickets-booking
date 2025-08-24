@@ -1,0 +1,10 @@
+{% extends "bookings/base.html" %}
+{% block title %}Бронювання рейсу{% endblock %}
+{% block content %}
+<h2>Бронювання: {{ trip }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Підтвердити</button>
+</form>
+{% endblock %}

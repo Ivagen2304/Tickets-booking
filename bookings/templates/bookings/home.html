@@ -1,0 +1,9 @@
+{% extends "bookings/base.html" %}
+{% block title %}Пошук рейсів — Квитки{% endblock %}
+{% block content %}
+<h2>Пошук рейсів</h2>
+<form method="get" action="{% url 'search_trains' %}">
+  {{ form.as_p }}
+  <button type="submit">Знайти</button>
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "bookings/base.html" %}
+{% block title %}Рейс {{ trip }}{% endblock %}
+{% block content %}
+<h2>{{ trip.train }} — {{ trip.origin }} → {{ trip.destination }}</h2>
+<p>Відправлення: <b>{{ trip.departure|date:"Y-m-d H:i" }}</b></p>
+<p>Прибуття: <b>{{ trip.arrival|date:"Y-m-d H:i" }}</b></p>
+<p>Вартість: <b>{{ trip.base_price }} ₴</b></p>
+<p>Вільні місця: <b>{{ trip.available_seats }}</b> з {{ trip.total_seats }}</p>
+{% if user.is_authenticated %}
+  {% if trip.available_seats > 0 %}
+    <a href="{% url 'book_trip' trip.id %}">Забронювати</a>
+  {% else %}
+    <em>Немає місць</em>
+  {% endif %}
+{% else %}
+  <p><a href="{% url 'login' %}?next={% url 'trip_details' trip.id %}">Увійдіть</a> щоб бронювати.</p>
+{% endif %}
+{% endblock %}

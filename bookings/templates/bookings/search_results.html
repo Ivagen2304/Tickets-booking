@@ -1,0 +1,26 @@
+{% extends "bookings/base.html" %}
+{% block title %}Результати пошуку{% endblock %}
+{% block content %}
+<h2>Результати пошуку</h2>
+<form method="get">
+  {{ form.as_p }}
+  <button type="submit">Оновити</button>
+</form>
+{% if trips %}
+  <table>
+    <tr><th>Поїзд</th><th>Відправлення</th><th>Прибуття</th><th>Ціна</th><th>Вільні місця</th><th></th></tr>
+    {% for t in trips %}
+    <tr>
+      <td>{{ t.train }}</td>
+      <td>{{ t.departure|date:"Y-m-d H:i" }} ({{ t.origin }})</td>
+      <td>{{ t.arrival|date:"Y-m-d H:i" }} ({{ t.destination }})</td>
+      <td>{{ t.base_price }} ₴</td>
+      <td>{{ t.available_seats }}</td>
+      <td><a href="{% url 'trip_details' t.id %}">Деталі</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>Нічого не знайдено.</p>
+{% endif %}
+{% endblock %}
