@@ -53,7 +53,6 @@ def book_trip(request, trip_id):
         form = BookingForm(request.POST)
         if form.is_valid():
             booking = Booking.objects.create(user=request.user, trip=trip, paid=False)
-            # assign next available seat (simple strategy)
             taken = set((t.carriage_index, t.seat_number) for t in trip.tickets.select_for_update())
             carriage_map = [(c.index, c.seats) for c in trip.train.carriages.all().order_by("index")]
             assigned = None
