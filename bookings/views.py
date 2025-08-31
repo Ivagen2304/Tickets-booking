@@ -83,3 +83,7 @@ def book_trip(request, trip_id):
 def my_bookings(request):
     bookings = Booking.objects.filter(user=request.user).select_related("trip","trip__train")
     return render(request, "bookings/my_bookings.html", {"bookings": bookings})
+
+def wallet(request):
+    form = SearchForm(request.GET or None)
+    return  render(request, "bookings/wallet.html")

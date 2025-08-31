@@ -11,4 +11,5 @@ urlpatterns = [
     path("trips/<int:trip_id>/", bviews.trip_details, name="trip_details"),
     path("book/<int:trip_id>/", bviews.book_trip, name="book_trip"),
     path("bookings/", bviews.my_bookings, name="my_bookings"),
+    path("wallet", bviews.wallet, name = "wallet"),
 ]

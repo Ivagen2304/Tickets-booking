@@ -1,0 +1,46 @@
+{% extends "bookings/base.html" %}
+
+{% block title %}Оплата{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+    <h2>Оплата</h2>
+    <form id="payForm" class="payment-form">
+        <input type="text" id="name" placeholder="Ім’я та прізвище" class="payment-input" required>
+        <input type="text" id="card" placeholder="Номер картки" maxlength="16" class="payment-input" required>
+        <input type="text" id="exp" placeholder="MM/YY" maxlength="5" class="payment-input" required>
+        <input type="text" id="cvc" placeholder="CVC" maxlength="3" class="payment-input" required>
+        <input type="number" placeholder="Сума" class="payment-input" required>
+        <button type="submit" class="payment-button">Сплатити</button>
+    </form>
+    <div id="success">Успішно сплачено</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Лише букви для імені
+const nameInput=document.getElementById('name');
+nameInput.addEventListener('input',()=>{ nameInput.value=nameInput.value.replace(/[^a-zA-ZА-Яа-яЇїІіЄєҐґ\s]/g,''); });
+
+// Лише цифри для картки
+const cardInput=document.getElementById('card');
+cardInput.addEventListener('input',()=>{ cardInput.value=cardInput.value.replace(/\D/g,''); });
+
+// Лише цифри і максимум 3 для CVC
+const cvcInput=document.getElementById('cvc');
+cvcInput.addEventListener('input',()=>{ cvcInput.value=cvcInput.value.replace(/\D/g,'').slice(0,3); });
+
+// MM/YY формат
+const expInput=document.getElementById('exp');
+expInput.addEventListener('input',()=>{ 
+    let v=expInput.value.replace(/\D/g,'').slice(0,4);
+    if(v.length>2){ v=v.slice(0,2)+'/'+v.slice(2); }
+    expInput.value=v;
+});
+
+// Показати повідомлення після натискання
+const form=document.getElementById('payForm');
+form.addEventListener('submit',(e)=>{ e.preventDefault(); document.getElementById('success').style.display='block'; });
+</script>
+{% endblock %}
