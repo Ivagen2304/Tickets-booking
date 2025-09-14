@@ -8,7 +8,14 @@
 </form>
 {% if trips %}
   <table>
-    <tr><th>Поїзд</th><th>Відправлення</th><th>Прибуття</th><th>Ціна</th><th>Вільні місця</th><th></th></tr>
+    <tr>
+      <th style="padding-right: 120px;">Поїзд</th>
+      <th style="padding-right: 120px;">Відправлення</th>
+      <th style="padding-right: 150px;">Прибуття</th>
+      <th style="padding-right: 120px;">Ціна</th>
+      <th style="padding-right: 120px;">Вільні місця</th>
+      <th></th>
+    </tr>
     {% for t in trips %}
     <tr>
       <td>{{ t.train }}</td>

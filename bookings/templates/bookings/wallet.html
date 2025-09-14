@@ -4,16 +4,19 @@
 
 {% block content %}
 <div class="payment-page">
+<div class="balance">Баланс: {{ user_balance }} грн</div>
+
     <h2>Оплата</h2>
-    <form id="payForm" class="payment-form">
+    <form method ="post" id="payForm" class="payment-form">
         <input type="text" id="name" placeholder="Ім’я та прізвище" class="payment-input" required>
         <input type="text" id="card" placeholder="Номер картки" maxlength="16" class="payment-input" required>
         <input type="text" id="exp" placeholder="MM/YY" maxlength="5" class="payment-input" required>
         <input type="text" id="cvc" placeholder="CVC" maxlength="3" class="payment-input" required>
-        <input type="number" placeholder="Сума" class="payment-input" required>
+        {% csrf_token %}
+        <input type="number" name="{{ form.amount.name }}" placeholder="Сума" value="{{ form.amount.value|default:'' }}" class="payment-input" required>
         <button type="submit" class="payment-button">Сплатити</button>
+        <div id="success">Успішно сплачено</div>
     </form>
-    <div id="success">Успішно сплачено</div>
 </div>
 {% endblock %}
 
@@ -27,9 +30,9 @@ nameInput.addEventListener('input',()=>{ nameInput.value=nameInput.value.replace
 const cardInput=document.getElementById('card');
 cardInput.addEventListener('input',()=>{ cardInput.value=cardInput.value.replace(/\D/g,''); });
 
-// Лише цифри і максимум 3 для CVC
+// Лише цифри для CVC
 const cvcInput=document.getElementById('cvc');
-cvcInput.addEventListener('input',()=>{ cvcInput.value=cvcInput.value.replace(/\D/g,'').slice(0,3); });
+cvcInput.addEventListener('input',()=>{ cvcInput.value=cvcInput.value.replace(/\D/g,''); });
 
 // MM/YY формат
 const expInput=document.getElementById('exp');
@@ -40,7 +43,6 @@ expInput.addEventListener('input',()=>{
 });
 
 // Показати повідомлення після натискання
-const form=document.getElementById('payForm');
-form.addEventListener('submit',(e)=>{ e.preventDefault(); document.getElementById('success').style.display='block'; });
+
 </script>
 {% endblock %}

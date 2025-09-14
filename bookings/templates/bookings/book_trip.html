@@ -1,10 +1,13 @@
 {% extends "bookings/base.html" %}
 {% block title %}Бронювання рейсу{% endblock %}
 {% block content %}
-<h2>Бронювання: {{ trip }}</h2>
+<h2>Бронювання:</h2>
+<div class="payment-page"></div>
+<div class="balance">Баланс: {{ user_balance }} грн</div>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Підтвердити</button>
+  <div>Ціна: {{ trip.base_price }} ₴</div>
+  <button type="submit">Оплатити</button>
 </form>
 {% endblock %}

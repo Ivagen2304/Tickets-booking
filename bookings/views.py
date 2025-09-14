@@ -7,6 +7,7 @@ from .models import Station, Train, Carriage, Trip, Booking, Ticket
 from .forms import SearchForm, BookingForm
 from django.contrib.auth import login
 from .forms import SignupForm
+from .forms import PaymentForm
 
 def signup(request):
     if request.method == "POST":
@@ -45,27 +46,35 @@ def trip_details(request, trip_id):
 @transaction.atomic
 def book_trip(request, trip_id):
     trip = get_object_or_404(Trip, pk=trip_id)
+    user_balance = request.user.profile.balance
     if trip.available_seats() <= 0:
         messages.error(request, "Вибачте, вільних місць немає.")
         return redirect("trip_details", trip_id=trip.id)
-
     if request.method == "POST":
         form = BookingForm(request.POST)
         if form.is_valid():
-            booking = Booking.objects.create(user=request.user, trip=trip, paid=False)
+            profile = request.user.profile
+            user_balance - trip.base_price
+            profile.save()
+            if user_balance < trip.base_price:
+                messages.error(request, "Недостатньо коштів на балансі для бронювання.")
+                return redirect("trip_details", trip_id=trip.id)
+            booking = Booking.objects.create(user=request.user, trip=trip, paid=True)
             taken = set((t.carriage_index, t.seat_number) for t in trip.tickets.select_for_update())
             carriage_map = [(c.index, c.seats) for c in trip.train.carriages.all().order_by("index")]
             assigned = None
             for c_index, seats in carriage_map:
-                for seat in range(1, seats+1):
+                for seat in range(1, seats + 1):
                     if (c_index, seat) not in taken:
                         assigned = (c_index, seat)
                         break
                 if assigned:
                     break
+
             if not assigned:
                 messages.error(request, "Не вдалося призначити місце.")
                 return redirect("trip_details", trip_id=trip.id)
+
             Ticket.objects.create(
                 booking=booking,
                 trip=trip,
@@ -73,17 +82,39 @@ def book_trip(request, trip_id):
                 seat_number=assigned[1],
                 passenger_name=form.cleaned_data["passenger_name"],
             )
-            messages.success(request, "Бронювання створено! (Оплата умовна — приклад)")
+
+            messages.success(request, f"Бронювання створено! {trip.base_price} грн знято з вашого балансу.")
             return redirect("my_bookings")
     else:
         form = BookingForm()
-    return render(request, "bookings/book_trip.html", {"trip": trip, "form": form})
+
+    return render(request, "bookings/book_trip.html", {
+        "trip": trip,
+        "form": form,
+        "user_balance": user_balance
+    })
 
 @login_required
 def my_bookings(request):
     bookings = Booking.objects.filter(user=request.user).select_related("trip","trip__train")
     return render(request, "bookings/my_bookings.html", {"bookings": bookings})
 
+@login_required
 def wallet(request):
     form = SearchForm(request.GET or None)
-    return  render(request, "bookings/wallet.html")
+    profile = request.user.profile  # отримуємо профіль користувача
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            profile.balance += amount
+            profile.save()
+            return redirect('wallet')
+    else:
+        form = PaymentForm()
+
+    return render(request, 'bookings/wallet.html', {
+        'form': form,
+        'user_balance': profile.balance,
+        'success': True
+    })

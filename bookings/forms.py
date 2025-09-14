@@ -3,6 +3,13 @@ from .models import Station
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+class PaymentForm(forms.Form):
+    amount = forms.DecimalField( 
+        max_digits=10, 
+        decimal_places=2,
+        label="Сума"
+    )
+
 class SignupForm(UserCreationForm):
     class Meta:
         model = User
