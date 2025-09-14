@@ -46,20 +46,28 @@ def trip_details(request, trip_id):
 @transaction.atomic
 def book_trip(request, trip_id):
     trip = get_object_or_404(Trip, pk=trip_id)
-    user_balance = request.user.profile.balance
+    profile = request.user.profile
+
     if trip.available_seats() <= 0:
         messages.error(request, "Вибачте, вільних місць немає.")
         return redirect("trip_details", trip_id=trip.id)
+
     if request.method == "POST":
         form = BookingForm(request.POST)
         if form.is_valid():
-            profile = request.user.profile
-            user_balance - trip.base_price
-            profile.save()
-            if user_balance < trip.base_price:
+            # Перевірка балансу перед списанням
+            if profile.balance < trip.base_price:
                 messages.error(request, "Недостатньо коштів на балансі для бронювання.")
                 return redirect("trip_details", trip_id=trip.id)
+
+            # Списуємо кошти і зберігаємо профіль
+            profile.balance -= trip.base_price
+            profile.save()
+
+            # Створення бронювання
             booking = Booking.objects.create(user=request.user, trip=trip, paid=True)
+
+            # Призначення місця у вагоні
             taken = set((t.carriage_index, t.seat_number) for t in trip.tickets.select_for_update())
             carriage_map = [(c.index, c.seats) for c in trip.train.carriages.all().order_by("index")]
             assigned = None
@@ -75,6 +83,7 @@ def book_trip(request, trip_id):
                 messages.error(request, "Не вдалося призначити місце.")
                 return redirect("trip_details", trip_id=trip.id)
 
+            # Створюємо квиток
             Ticket.objects.create(
                 booking=booking,
                 trip=trip,
@@ -91,7 +100,7 @@ def book_trip(request, trip_id):
     return render(request, "bookings/book_trip.html", {
         "trip": trip,
         "form": form,
-        "user_balance": user_balance
+        "user_balance": profile.balance
     })
 
 @login_required
