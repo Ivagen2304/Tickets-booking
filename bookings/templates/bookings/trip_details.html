@@ -6,9 +6,42 @@
 <p>Прибуття: <b>{{ trip.arrival|date:"Y-m-d H:i" }}</b></p>
 <p>Вартість: <b>{{ trip.base_price }} ₴</b></p>
 <p>Вільні місця: <b>{{ trip.available_seats }}</b> з {{ trip.total_seats }}</p>
+    <style>
+
+        .neon-btn {
+        padding: 7px 20px;
+        color: rgb(255, 230, 0);
+        border: 2px solid rgb(255, 230, 0);
+        background: black;
+        font-size: 0.9rem;
+        font-family: Arial, sans-serif;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: 0.2s;
+        box-shadow: 0 0 10px rgb(255, 230, 0), 0 0 20px rgb(255, 230, 0);
+        }
+
+        .neon-btn:hover {
+        background: rgb(255, 230, 0);
+        color: #000;
+        box-shadow: 0 0 20px rgb(255, 230, 0), 0 0 40px rgb(255, 230, 0), 0 0 60px rgb(255, 230, 0);
+        }
+
+        body {
+            background-image: url('https://imgcdn.stablediffusionweb.com/2024/2/28/368e993c-1066-406a-ae03-0ce2450c5a10.jpg');
+            background-position: center center;
+            background-size: 100%;
+            color: #ffffff;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+</body>
 {% if user.is_authenticated %}
   {% if trip.available_seats > 0 %}
-    <a href="{% url 'book_trip' trip.id %}">Забронювати</a>
+    <a href="{% url 'book_trip' trip.id %}"><button class="neon-btn">Забронювати</button></a>
   {% else %}
     <em>Немає місць</em>
   {% endif %}

@@ -2,12 +2,43 @@
 {% block title %}Бронювання рейсу{% endblock %}
 {% block content %}
 <h2>Бронювання:</h2>
+<style>
+
+        .neon-btn {
+        padding: 7px 20px;
+        color: rgb(0, 255, 0);
+        border: 2px solid rgb(0, 250, 0);
+        background: black;
+        font-size: 0.9rem;
+        font-family: Arial, sans-serif;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: 0.2s;
+        box-shadow: 0 0 10px rgb(0, 250, 0), 0 0 20px rgb(0, 250, 0);
+        }
+
+        .neon-btn:hover {
+        background: rgb(0, 250, 0);
+        color: #000;
+        box-shadow: 0 0 20px rgb(0, 250, 0), 0 0 40px rgb(0, 250, 0), 0 0 60px rgb(0, 250, 0);
+        }
+
+        body {
+            background-image: url('https://imgcdn.stablediffusionweb.com/2024/2/28/368e993c-1066-406a-ae03-0ce2450c5a10.jpg');
+            background-position: center center;
+            background-size: 100%;
+            color: #ffffff;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
 <div class="payment-page"></div>
 <div class="balance">Баланс: {{ user_balance }} грн</div>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <div>Ціна: {{ trip.base_price }} ₴</div>
-  <button type="submit">Оплатити</button>
+  <h4>Ціна: {{ trip.base_price }} ₴</h4>
+  <button class="neon-btn">Оплатити</button>
 </form>
 {% endblock %}

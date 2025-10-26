@@ -2,10 +2,26 @@
 {% block title %}Мої бронювання{% endblock %}
 {% block content %}
 <h2>Мої бронювання</h2>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+        background-image: url('https://imgcdn.stablediffusionweb.com/2024/2/28/368e993c-1066-406a-ae03-0ce2450c5a10.jpg');
+        background-position: center center;
+        background-size: 100%;
+        color: #ffffff;
+        background-attachment: fixed;
+        
+      }
+      
+  .size{
+    font-size: x-large;
+  }
+</style>
 {% if bookings %}
   <ul>
   {% for b in bookings %}
-    <li>
+    <li class="size">
       №{{ b.id }} — {{ b.trip.train }}: {{ b.trip.origin }}→{{ b.trip.destination }} — {{ b.trip.departure|date:"Y-m-d H:i" }}
       {% for t in b.tickets.all %}
         <div>Пасажир: {{ t.passenger_name }}, вагон {{ t.carriage_index }}, місце {{ t.seat_number }}</div>

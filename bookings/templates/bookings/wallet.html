@@ -3,6 +3,19 @@
 {% block title %}Оплата{% endblock %}
 
 {% block content %}
+<style>
+  body {
+        background-image: url('https://imgcdn.stablediffusionweb.com/2024/2/28/368e993c-1066-406a-ae03-0ce2450c5a10.jpg');
+        background-position: center center;
+        background-size: 100%;
+        color: #ffffff;
+        background-attachment: fixed;
+      }
+
+  .balance{
+    color: #ffffff;
+  }
+</style>
 <div class="payment-page">
 <div class="balance">Баланс: {{ user_balance }} грн</div>
 
@@ -41,8 +54,6 @@ expInput.addEventListener('input',()=>{
     if(v.length>2){ v=v.slice(0,2)+'/'+v.slice(2); }
     expInput.value=v;
 });
-
-// Показати повідомлення після натискання
 
 </script>
 {% endblock %}
